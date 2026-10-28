@@ -4,10 +4,22 @@ declare global {
   var __ajaiaSql: postgres.Sql | undefined;
 }
 
+function missingDatabaseSql(): postgres.Sql {
+  const fail = (): never => {
+    throw new Error("DATABASE_URL is not set. Copy .env.example to .env and configure it.");
+  };
+  const target = () => undefined;
+  return new Proxy(target, {
+    get: fail,
+    apply: fail,
+    construct: fail,
+  }) as unknown as postgres.Sql;
+}
+
 function createSql(): postgres.Sql {
   const url = process.env.DATABASE_URL;
   if (!url) {
-    throw new Error("DATABASE_URL is not set. Copy .env.example to .env and configure it.");
+    return missingDatabaseSql();
   }
   const sslRequired = process.env.DATABASE_SSL === "require";
       const poolMax = process.env.DATABASE_POOL_MAX
