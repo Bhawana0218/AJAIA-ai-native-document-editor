@@ -1,0 +1,20 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: ajaia-docs-db
+    environment:
+      POSTGRES_USER: ajaia
+      POSTGRES_PASSWORD: ajaia
+      POSTGRES_DB: ajaia_docs
+    ports:
+      - "5433:5432"
+    volumes:
+      - ajaia_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ajaia -d ajaia_docs"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+
+volumes:
+  ajaia_pgdata:

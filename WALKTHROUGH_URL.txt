@@ -1,0 +1,7 @@
+WALKTHROUGH_URL = PLACEHOLDER — video not recorded yet.
+
+To be recorded (suggest < 5 min): login as bob (editor), open "Product
+Requirements — Docs MVP", type-with-bold assertion in the toolbar, observe
+autosave Saved, attempt rename/delete as bob (denied), share-dialog grant of
+Viewer, then login as carol and show the read-only editor, and finally the
+.txt/.md import flow from the dashboard.
