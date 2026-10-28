@@ -9,10 +9,22 @@ function createSql(): postgres.Sql {
   if (!url) {
     throw new Error("DATABASE_URL is not set. Copy .env.example to .env and configure it.");
   }
+  const sslRequired = process.env.DATABASE_SSL === "require";
+  // Pool sizing: hosted serverless platforms fan out many small instances, so
+  // keep the per-instance pool small when SSL/hosted Postgres is in use.
+  const poolMax = process.env.DATABASE_POOL_MAX
+    ? Math.max(1, Number(process.env.DATABASE_POOL_MAX))
+    : sslRequired
+      ? 3
+      : 10;
   return postgres(url, {
-    ssl: process.env.DATABASE_SSL === "require" ? "require" : undefined,
-    max: 10,
+    ssl: sslRequired ? "require" : undefined,
+    max: poolMax,
     idle_timeout: 30,
+    connect_timeout: 10,
+    // Transaction-poolers (e.g. Supabase 6543, Neon pooler) cannot mix
+    // prepared statements across connections; opt out via env when needed.
+    prepare: process.env.DATABASE_PREPARE === "false" ? false : true,
   });
 }
 

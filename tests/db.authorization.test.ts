@@ -27,13 +27,15 @@ let sql: postgres.Sql | null = null;
 const testPrefix = `test_${randomBytes(4).toString("hex")}_`;
 
 beforeAll(async () => {
-  if (!process.env.DATABASE_URL) process.exitCode = 0;
-  const candidate = postgres(process.env.DATABASE_URL ?? "", { ssl: process.env.DATABASE_SSL === "require" ? "require" : undefined });
+  const candidate = postgres(process.env.DATABASE_URL ?? "", {
+    connect_timeout: 5,
+    ssl: process.env.DATABASE_SSL === "require" ? "require" : undefined,
+  });
   try {
     await candidate`select 1`;
     sql = candidate;
   } catch {
-    await candidate.end();
+    await candidate.end().catch(() => {});
     sql = null;
   }
 });

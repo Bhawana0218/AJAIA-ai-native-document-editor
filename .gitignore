@@ -19,3 +19,7 @@ Thumbs.db
 # Misc
 *.tsbuildinfo
 npm-debug.log*
+
+.vercel
+.env*
+!.env.example
