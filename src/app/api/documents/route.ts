@@ -21,11 +21,6 @@ export async function GET(): Promise<NextResponse> {
   );
 }
 
-/**
- * Creates a document owned by the caller. Starts with an empty doc.
- * (Imports go through POST /api/documents/import, which creates
- * documents through this same data layer with server-side authorization.)
- */
 export async function POST(request: Request): Promise<NextResponse> {
   const { user } = await requireUser();
   if (!user) return jsonError(401, "Authentication required");
@@ -34,8 +29,7 @@ export async function POST(request: Request): Promise<NextResponse> {
   try {
     body = await request.json();
   } catch {
-    // body optional — creating an empty document is allowed
-  }
+      }
   const title = str(body.title, 120) ?? "Untitled";
 
   const doc = await createDocument({ ownerId: user.id, title, content: emptyDoc() });

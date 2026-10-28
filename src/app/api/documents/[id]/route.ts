@@ -19,8 +19,7 @@ export async function GET(_request: Request, { params }: Params): Promise<NextRe
   if (!ctx) return jsonError(404, "Document not found");
   const doc = await getDocument(id);
   if (!doc || !canRead(ctx)) {
-    // Do not leak existence to unrelated users.
-    return jsonError(404, "Document not found");
+        return jsonError(404, "Document not found");
   }
 
   return NextResponse.json(
@@ -45,8 +44,7 @@ export async function PATCH(request: Request, { params }: Params): Promise<NextR
   const { id } = await params;
 
   const ctx = await getPermissionContext(id, user.id);
-  // 404 (not 403) for unrelated users so document IDs cannot be enumerated.
-  if (!ctx || !canRead(ctx)) return jsonError(404, "Document not found");
+    if (!ctx || !canRead(ctx)) return jsonError(404, "Document not found");
 
   if (!canEditContent(ctx)) {
     return jsonError(403, "You have read-only access to this document");

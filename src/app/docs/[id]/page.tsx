@@ -12,14 +12,12 @@ export default async function DocumentPage({ params }: { params: Promise<{ id: s
   const { id } = await params;
 
   const ctx = await getPermissionContext(id, user.id);
-  // Do not reveal whether a random document ID exists.
-  if (!ctx || !canRead(ctx)) redirect("/dashboard?error=notfound");
+    if (!ctx || !canRead(ctx)) redirect("/dashboard?error=notfound");
 
   const doc = await getDocument(id);
   if (!doc) redirect("/dashboard?error=notfound");
 
-  // Read-only pages don't need share lists fetched eagerly.
-  let shares: Awaited<ReturnType<typeof listShares>> = [];
+    let shares: Awaited<ReturnType<typeof listShares>> = [];
   let canManage = false;
   if (canRead(ctx)) {
     canManage = effectiveRole(ctx) === "owner";

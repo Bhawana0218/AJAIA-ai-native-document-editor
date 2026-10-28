@@ -9,7 +9,6 @@ const scrypt = promisify(scryptCb) as (
 
 const KEYLEN = 64;
 
-/** Format: scrypt$<saltHex>$<hashHex> */
 export async function hashPassword(password: string): Promise<string> {
   const salt = randomBytes(16);
   const hash = await scrypt(password, salt, KEYLEN);

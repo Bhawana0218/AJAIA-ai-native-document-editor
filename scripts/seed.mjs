@@ -1,6 +1,4 @@
 #!/usr/bin/env node
-// Seeds demo accounts and sample documents so permission behavior can be
-// verified immediately. Safe to run multiple times (idempotent).
 import { randomBytes, scrypt as scryptCb } from "node:crypto";
 import { promisify } from "node:util";
 import postgres from "postgres";

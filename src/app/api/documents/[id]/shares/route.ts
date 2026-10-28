@@ -25,7 +25,6 @@ function serializeShare(s: {
   };
 }
 
-/** Lists current collaborators. Readable by anyone who can read the doc. */
 export async function GET(_request: Request, { params }: Params): Promise<NextResponse> {
   const { user } = await requireUser();
   if (!user) return jsonError(401, "Authentication required");
@@ -43,14 +42,6 @@ export async function GET(_request: Request, { params }: Params): Promise<NextRe
   );
 }
 
-/**
- * Grants or updates a share. Rules:
- *  - Owners grant viewer or editor to anyone except themselves.
- *  - Editors may only grant the "viewer" role, and only as a NEW share
- *    (they can never modify an existing share, including their own).
- *  - Duplicate sharing with the same recipient updates the role (owner only)
- *    or is rejected (editor).
- */
 export async function POST(request: Request, { params }: Params): Promise<NextResponse> {
   const { user } = await requireUser();
   if (!user) return jsonError(401, "Authentication required");
@@ -88,9 +79,7 @@ export async function POST(request: Request, { params }: Params): Promise<NextRe
     return jsonError(400, "This user is the document owner");
   }
 
-  // Editors cannot modify an existing share (incl. their own); owners can
-  // update the role. Detect existing shares before the upsert.
-  const existing = (await listShares(id)).find((s) => s.recipient_id === recipient.id);
+      const existing = (await listShares(id)).find((s) => s.recipient_id === recipient.id);
   if (existing && actorRole !== "owner") {
     return jsonError(403, "This user already has access; only the owner can change it");
   }
@@ -117,7 +106,6 @@ export async function POST(request: Request, { params }: Params): Promise<NextRe
   }
 }
 
-/** Revokes a share. Owner-only. */
 export async function DELETE(request: Request, { params }: Params): Promise<NextResponse> {
   const { user } = await requireUser();
   if (!user) return jsonError(401, "Authentication required");

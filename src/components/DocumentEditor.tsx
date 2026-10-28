@@ -51,11 +51,10 @@ export function DocumentEditor({
   const router = useRouter();
   const canEdit = role === "owner" || role === "editor";
 
-  // ---- autosave state ----
-  const [status, setStatus] = useState<SaveStatus>("idle");
+    const [status, setStatus] = useState<SaveStatus>("idle");
   const [savedAt, setSavedAt] = useState<string | null>(doc.updatedAt);
   const [title, setTitle] = useState(doc.title);
-  const dirtyRef = useRef(false); // has unsaved changes?
+  const dirtyRef = useRef(false); 
   const savingRef = useRef(false);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const latestRef = useRef<{ title: string; content: object }>({
@@ -68,8 +67,7 @@ export function DocumentEditor({
     {
       extensions: [
         StarterKit.configure({
-          // H1-H4 supported; toolbar exposes H1-H3
-          heading: { levels: [1, 2, 3, 4] },
+                    heading: { levels: [1, 2, 3, 4] },
         }),
         Placeholder.configure({
           placeholder: "Start writing, or use the toolbar to add headings and lists…",
@@ -123,9 +121,7 @@ export function DocumentEditor({
       setStatus("error");
     } finally {
       savingRef.current = false;
-      // On failure, retry with bounded backoff (max 3 attempts) instead of
-      // an unbounded tight loop; a subsequent edit always reschedules.
-      if (dirtyRef.current && failed && attemptsRef.current < 3) {
+                  if (dirtyRef.current && failed && attemptsRef.current < 3) {
         attemptsRef.current += 1;
         setTimeout(() => scheduleSaveRef.current(), 3000);
       }
@@ -141,8 +137,7 @@ export function DocumentEditor({
   const scheduleSaveRef = useRef(scheduleSave);
   scheduleSaveRef.current = scheduleSave;
 
-  // Warn on unload / flush pending changes when the tab is hidden.
-  useEffect(() => {
+    useEffect(() => {
     const onBeforeUnload = (e: BeforeUnloadEvent) => {
       if (dirtyRef.current) {
         e.preventDefault();
@@ -163,15 +158,13 @@ export function DocumentEditor({
     };
   }, [performSave]);
 
-  // ---- title edits (owner only) ----
-  function onTitleChange(value: string) {
+    function onTitleChange(value: string) {
     setTitle(value);
     latestRef.current = { ...latestRef.current, title: value };
     scheduleSave();
   }
 
-  // ---- dialogs ----
-  const [shareOpen, setShareOpen] = useState(false);
+    const [shareOpen, setShareOpen] = useState(false);
   const [renameOpen, setRenameOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -179,8 +172,7 @@ export function DocumentEditor({
   async function handleRename(newTitle: string): Promise<string | null> {
     latestRef.current = { ...latestRef.current, title: newTitle };
     setTitle(newTitle);
-    // save immediately via same patch channel
-    const res = await fetch(`/api/documents/${doc.id}`, {
+        const res = await fetch(`/api/documents/${doc.id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ title: newTitle }),
@@ -217,7 +209,7 @@ export function DocumentEditor({
 
   return (
     <main className="flex min-h-dvh flex-col bg-subtle">
-      {/* Header */}
+      {}
       <header className="border-b border-zinc-200 bg-canvas">
         <div className="mx-auto flex h-14 max-w-4xl items-center justify-between gap-3 px-4">
           <div className="flex min-w-0 items-center gap-3">
@@ -281,10 +273,10 @@ export function DocumentEditor({
         </div>
       </header>
 
-      {/* Editor surface */}
+      {}
       <div className="mx-auto w-full max-w-4xl flex-1 px-4 pb-24">
         <div className="mt-8 rounded-xl border border-zinc-200 bg-canvas shadow-sm">
-          {/* Title row */}
+          {}
           <div className="border-b border-zinc-100 px-6 pt-6 pb-4 sm:px-10">
             {canManage ? (
               <input
@@ -307,7 +299,7 @@ export function DocumentEditor({
             </p>
           </div>
 
-          {/* Toolbar + save status */}
+          {}
           <div className="sticky top-0 z-10 flex items-center justify-between gap-2 bg-canvas/95 px-4 py-2 backdrop-blur sm:px-8">
             <EditorToolbar editor={canEdit ? editor : null} />
             <SaveStatusIndicator status={status} />
@@ -319,14 +311,14 @@ export function DocumentEditor({
             </div>
           ) : null}
 
-          {/* Body */}
+          {}
           <div className="px-6 pb-16 pt-2 sm:px-10">
             <EditorContent editor={editor} />
           </div>
         </div>
       </div>
 
-      {/* Dialogs */}
+      {}
       <ShareDialog
         open={shareOpen}
         onClose={() => setShareOpen(false)}

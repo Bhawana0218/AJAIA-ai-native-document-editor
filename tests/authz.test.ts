@@ -1,7 +1,3 @@
-/**
- * Unit tests for the authorization policy layer (src/lib/authz.ts).
- * These run anywhere — no database required.
- */
 import { describe, expect, it } from "vitest";
 import {
   canEditContent,

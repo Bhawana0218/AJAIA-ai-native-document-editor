@@ -2,6 +2,8 @@
 
 Ajaia LLC · AI-Native Full Stack Developer Assignment
 Repository contents: this project (Next.js 15 + TypeScript + Tailwind 4 + Tiptap 3 + PostgreSQL).
+Source repository: https://github.com/Bhawana0218/AJAIA-ai-native-document-editor
+Live URL: pending owner deployment (see "Known limitations" below).
 
 ## Exact contents
 
@@ -11,10 +13,12 @@ ARCHITECTURE.md      structure, data model, authorization, decisions
 AI_WORKFLOW.md       factual account of AI usage and verification
 SUBMISSION.md        this file
 WALKTHROUGH_URL.txt  placeholder for the recorded walkthrough video
+WALKTHROUGH_SCRIPT.md  3–5 min recording script with cues and checklist
+screenshots/         capture instructions (real screenshots pending deployed URL)
 docker-compose.yml   local Postgres 16 (host port 5433)
 migrations/0001_init.sql   full schema (constraints, indexes, trigger)
-scripts/             migrate.mjs, seed.mjs, env.mjs (no extra deps)
-src/                 app/ (pages + API), db/, lib/, components/
+scripts/             migrate.mjs, seed.mjs, env.mjs, strip-comments.mjs
+src/                 app/ (pages + API incl. /api/health), db/, lib/, components/
 tests/               vitest: authz.test.ts, db.authorization.test.ts, import.test.ts
 package.json         scripts (dev/build/start/lint/typecheck/test/db:*)
 eslint.config.mjs · tsconfig.json · vitest.config.ts · postcss.config.mjs
@@ -62,7 +66,8 @@ UI-level verification through a real browser session is described in AI_WORKFLOW
 
 ## Known limitations (honest status)
 
-- **Live deployment not completed/verified.** WALKTHROUGH_URL and any live URL are placeholders. Deployment steps (Supabase free tier + Vercel/Railway) are documented in README; the production build was verified locally (`next build` + `next start`), and the DB was only exercised via local Docker Postgres. Remaining manual actions: create hosted Postgres, run migrations + seed against it, deploy, smoke test.
+- **Live deployment not completed/verified.** Deployment is performed by the repository owner via Vercel (exact steps in README.md: import repo → hosted Postgres → run `scripts/migrate.mjs` + `scripts/seed.mjs` against it → set `DATABASE_URL`, `SESSION_SECRET`, `DATABASE_SSL` → deploy → check `/api/health`). The production build was verified locally (`next build` + `next start`), and the DB was only exercised via local Docker Postgres. Live smoke tests, screenshots, and the walkthrough video are pending the deployed URL.
+- **Source repository:** https://github.com/Bhawana0218/AJAIA-ai-native-document-editor (clone URL for reviewers).
 - **No true real-time co-editing** — saves are debounced last-write-wins; two simultaneous editors can overwrite each other's changes at save granularity.
 - **Editing one document concurrently from two tabs is not conflict-safe** (documented in ARCHITECTURE).
 - **Registration flow not implemented** — accounts come from seeding only (assignment-sanctioned mechanism). Unknown emails are rejected at share time.

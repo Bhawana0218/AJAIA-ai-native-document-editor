@@ -9,8 +9,7 @@ type ModalProps = {
   onClose: () => void;
   title: string;
   children: React.ReactNode;
-  /** Extra footer slot (optional). */
-  footer?: React.ReactNode;
+    footer?: React.ReactNode;
 };
 
 export function Modal({ open, onClose, title, children, footer }: ModalProps) {

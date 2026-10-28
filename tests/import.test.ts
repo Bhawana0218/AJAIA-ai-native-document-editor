@@ -1,6 +1,3 @@
-/**
- * Tests for the .txt/.md import converters (src/lib/import.ts).
- */
 import { describe, expect, it } from "vitest";
 import { convertImport, markdownToProseMirror, textToProseMirror } from "@/lib/import";
 
@@ -16,8 +13,7 @@ describe("markdownToProseMirror", () => {
     expect(blocks[2].type).toBe("bulletList");
     expect(blocks[2].content?.length).toBe(2);
     expect(blocks[3].type).toBe("orderedList");
-    // bold mark present in paragraph
-    const para = blocks[1].content ?? [];
+        const para = blocks[1].content ?? [];
     expect(para.some((n) => n.marks?.[0]?.type === "bold")).toBe(true);
   });
 

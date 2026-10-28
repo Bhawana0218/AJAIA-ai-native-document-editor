@@ -9,7 +9,6 @@ export type DocumentListItem = {
   updated_at: Date;
 };
 
-/** Documents the user owns or has a share on, newest activity first. */
 export async function listDocumentsForUser(userId: string): Promise<DocumentListItem[]> {
   return sql<DocumentListItem[]>`
     with mine as (
@@ -32,7 +31,6 @@ export async function listDocumentsForUser(userId: string): Promise<DocumentList
   `;
 }
 
-/** Fetches a document and the caller's share (if any) as a permission context. */
 export async function getPermissionContext(
   documentId: string,
   userId: string,
@@ -51,7 +49,6 @@ export async function getPermissionContext(
   return { document: docs[0], userId, share: shares[0] ?? null };
 }
 
-/** Full document fetch (owner-scoped claims like owner name/email included). */
 export async function getDocument(documentId: string): Promise<
   | (Pick<DocumentRecord, "id" | "owner_id" | "title" | "content" | "created_at" | "updated_at"> & {
       owner_name: string;
@@ -117,7 +114,6 @@ export async function deleteDocument(documentId: string): Promise<boolean> {
   return rows.length > 0;
 }
 
-// ---------------- Sharing ----------------
 
 export async function listShares(documentId: string): Promise<ShareWithUser[]> {
   if (!isUuid(documentId)) return [];
@@ -167,7 +163,6 @@ export function isUuid(value: string): boolean {
   return UUID_RE.test(value);
 }
 
-/** JSON shape for API responses. */
 export function serializeDocument(doc: DocumentRecord) {
   return {
     id: doc.id,

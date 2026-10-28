@@ -24,6 +24,22 @@ session, not a narrative of imagined experiences.
   type, autosave persistence check in Postgres, share grant, viewer
   read-only experience) to validate what tests could not.
 
+## Deployment-phase session facts
+
+- Vercel CLI (authenticated) was used to: link the project (`ajaia-docs`),
+  connect the GitHub repository, and pull project settings.
+- `vercel build --prod` locally fails with `EPERM ... symlink` — a Windows
+  symlink-permission limitation of the local machine, not a project issue;
+  the same project passes `next build`, which is what Vercel's remote builder
+  runs. Treated as a local-only pre-flight limitation.
+- Marketplace Postgres (Neon/Supabase) installation is gated by Vercel behind
+  an interactive browser terms-acceptance (non-interactive CLI returns
+  `integration_terms_acceptance_required`). The live deployment is therefore
+  executed by the repository owner; exact steps are in README.md. No
+  deployment URL was fabricated.
+- Source was pushed to GitHub
+  (`https://github.com/Bhawana0218/AJAIA-ai-native-document-editor.git`).
+
 ## Output changed or rejected
 
 - The import endpoint originally spread a per-provider JSON type (`sql.json`)

@@ -24,7 +24,6 @@ function Separator() {
   return <span className="mx-1 h-5 w-px bg-zinc-200" aria-hidden="true" />;
 }
 
-/** Marks that map 1:1 onto editor commands. */
 const MARK_META = [
   { cmd: "bold", label: "B", title: "Bold (Ctrl+B)", className: "font-bold" },
   { cmd: "italic", label: "I", title: "Italic (Ctrl+I)", className: "italic" },

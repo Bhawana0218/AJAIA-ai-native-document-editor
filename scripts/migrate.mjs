@@ -1,6 +1,4 @@
 #!/usr/bin/env node
-// Runs all SQL migrations in migrations/ in sorted order, exactly once each.
-// Tracks applied migrations in the _migrations table.
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import postgres from "postgres";
@@ -34,8 +32,7 @@ try {
       continue;
     }
     const query = readFileSync(join(dir, file), "utf8");
-    // postgres.js supports multi-statement files via sql.unsafe
-    await sql.unsafe(query);
+        await sql.unsafe(query);
     await sql`insert into _migrations (name) values (${file})`;
     console.log(`+ applied ${file}`);
   }

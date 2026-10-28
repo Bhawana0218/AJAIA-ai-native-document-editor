@@ -25,14 +25,14 @@ body {
   font-family: var(--font-sans);
 }
 
-/* Visible, consistent focus states for keyboard users */
+
 :focus-visible {
   outline: 2px solid var(--color-accent-600);
   outline-offset: 1px;
   border-radius: 4px;
 }
 
-/* ---------------- ProseMirror editor surface ---------------- */
+
 
 .ProseMirror {
   @apply min-h-full outline-none;

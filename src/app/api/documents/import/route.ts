@@ -3,12 +3,6 @@ import { requireUser, str, jsonError } from "@/lib/api";
 import { createDocument } from "@/lib/documents";
 import { IMPORT_EXTENSIONS, convertImport, emptyDoc } from "@/lib/import";
 
-/**
- * Imports .txt / .md files into new editable documents.
- * The file body is sent as JSON { filename, text } so the parser runs
- * server-side with server-side authorization on the creating user.
- * Unsupported formats are rejected with a clear 415 response.
- */
 export async function POST(request: Request): Promise<NextResponse> {
   const { user } = await requireUser();
   if (!user) return jsonError(401, "Authentication required");
@@ -39,8 +33,7 @@ export async function POST(request: Request): Promise<NextResponse> {
     return jsonError(415, `Unsupported file type ".${ext}". Only .txt and .md files can be imported.`);
   }
 
-  // Prefer a Markdown H1 title, else the filename without extension.
-  const fallbackTitle = filename.replace(/\.[^.]+$/, "").replace(/[-_]+/g, " ").trim();
+    const fallbackTitle = filename.replace(/\.[^.]+$/, "").replace(/[-_]+/g, " ").trim();
   const title = str(converted.title, 120) ?? str(fallbackTitle, 120) ?? "Imported document";
 
   const doc = await createDocument({

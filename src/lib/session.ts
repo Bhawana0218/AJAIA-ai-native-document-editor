@@ -4,7 +4,7 @@ import { sql } from "@/db";
 import type { User } from "@/db";
 
 const COOKIE_NAME = "ajaia_session";
-const SESSION_TTL_MS = 14 * 24 * 60 * 60 * 1000; // 14 days
+const SESSION_TTL_MS = 14 * 24 * 60 * 60 * 1000; 
 
 function secret(): string {
   const s = process.env.SESSION_SECRET;
@@ -20,11 +20,6 @@ function sign(payload: string): string {
   return createHmac("sha256", secret()).update(payload).digest("base64url");
 }
 
-/**
- * Session token format: <userId>.<expiryMs>.<hmac(userId.expiryMs)>
- * HMAC-SHA256 with SERVER-SIDE secret only — the cookie is HttpOnly and
- * cannot be forged from the client.
- */
 export function createSessionToken(userId: string): string {
   const payload = `${userId}.${Date.now() + SESSION_TTL_MS}`;
   return `${payload}.${sign(payload)}`;
@@ -57,7 +52,6 @@ export async function clearSessionCookie(): Promise<void> {
   (await cookies()).delete(COOKIE_NAME);
 }
 
-/** Resolves the logged-in user from the signed session cookie, or null. */
 export async function getCurrentUser(): Promise<SafeUser | null> {
   const store = await cookies();
   const token = store.get(COOKIE_NAME)?.value;

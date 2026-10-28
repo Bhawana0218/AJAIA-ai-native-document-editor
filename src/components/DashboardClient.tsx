@@ -178,7 +178,7 @@ export function DashboardClient({
 
   return (
     <main className="min-h-dvh bg-subtle">
-      {/* Top bar */}
+      {}
       <header className="border-b border-zinc-200 bg-canvas">
         <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4 sm:px-6">
           <Link href="/dashboard" className="flex items-center gap-2 font-semibold tracking-tight">
@@ -259,7 +259,7 @@ export function DashboardClient({
           </p>
         ) : null}
 
-        {/* Search + tabs */}
+        {}
         <div className="mb-4 flex flex-wrap items-center gap-3">
           <div className="relative w-full max-w-xs">
             <SearchIcon
@@ -292,7 +292,7 @@ export function DashboardClient({
           </div>
         </div>
 
-        {/* Document grid */}
+        {}
         {visible.length === 0 ? (
           emptyState
         ) : (
@@ -318,7 +318,7 @@ export function DashboardClient({
                     {doc.role === "owner" ? "You" : doc.ownerName} · {timeAgo(doc.updatedAt)}
                   </p>
                 </Link>
-                {/* Owner-only row actions */}
+                {}
                 {doc.role === "owner" ? (
                   <div className="absolute top-12 right-3 flex gap-1 opacity-0 transition-opacity group-hover:opacity-100 focus-within:opacity-100">
                     <IconAction
@@ -343,7 +343,7 @@ export function DashboardClient({
         )}
       </div>
 
-      {/* Delete confirmation */}
+      {}
       <Modal
         open={deleteTarget !== null}
         onClose={() => setDeleteTarget(null)}
@@ -365,7 +365,7 @@ export function DashboardClient({
         </p>
       </Modal>
 
-      {/* Rename dialog */}
+      {}
       <RenameDialog
         target={renameTarget}
         onClose={() => setRenameTarget(null)}

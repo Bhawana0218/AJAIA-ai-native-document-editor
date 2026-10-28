@@ -1,4 +1,3 @@
-// Minimal .env loader for the Node scripts (no dependency).
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
@@ -12,6 +11,5 @@ export function loadEnv() {
       }
     }
   } catch {
-    // .env is optional; real environment variables take precedence
-  }
+      }
 }

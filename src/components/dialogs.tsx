@@ -12,8 +12,7 @@ export function RenameDialog({
 }: {
   target: RenameTarget;
   onClose: () => void;
-  /** Returns an error message or null on success. */
-  onSave: (id: string, newTitle: string) => Promise<string | null>;
+    onSave: (id: string, newTitle: string) => Promise<string | null>;
 }) {
   const [title, setTitle] = useState("");
   const [busy, setBusy] = useState(false);

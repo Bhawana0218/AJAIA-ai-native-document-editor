@@ -90,23 +90,35 @@ everything.
 ## Deployment
 
 The app is deployable to any Node host (verified locally with `next build` +
-`next start`). A free-tier-friendly setup:
+`next start`). **Deployment is performed by the repo owner via Vercel** —
+one-time setup (from the Vercel dashboard or CLI):
 
-1. **Database — Supabase (free tier):**
-   - Create a project; note the session-pooler connection string
-     (`postgres://postgres.<ref>:<password>@aws-0-<region>.pooler.supabase.com:6543/postgres`).
-   - Run migrations against it: `DATABASE_URL="..." DATABASE_SSL=require node scripts/migrate.mjs`
-     (the SQL in `migrations/` is plain Postgres and runs identically on Supabase).
-   - Run `scripts/seed.mjs` the same way if you want the demo data online.
-2. **App — Vercel / Railway / Render (free tier):**
-   - Push this repo; set env vars `DATABASE_URL`, `SESSION_SECRET` (long random hex),
-     `DATABASE_SSL=require`.
-   - Build command `npm run build`, start `npm start`, Node 18+.
-   - The app has no build-time database dependency; pages/routes resolve auth and
-     DB access at request time.
-3. **Post-deploy smoke test:** sign in with a seeded account, create a document,
-   edit, reload (content persisted), share with another seeded account, and verify
-   the recipient sees Viewer/Editor behavior.
+1. **Project:** import the GitHub repo (`Bhawana0218/AJAIA-ai-native-document-editor`)
+   into Vercel as project `ajaia-docs`. Framework preset: Next.js (auto-detected);
+   build `next build`; no special Node version (18.18+; 20/22 recommended).
+2. **Database — free-tier Neon or Supabase Postgres:**
+   - Create the hosted database from the provider dashboard
+     (or Vercel → Storage → Marketplace → Neon, which requires a one-time
+     terms acceptance in the browser).
+   - Copy the **session/direct connection string**.
+   - Apply migrations from any machine that has repo access:
+     `DATABASE_URL="<connection string>" DATABASE_SSL=require node scripts/migrate.mjs`
+     (idempotent — tracks applied files in `_migrations`; also runs on Supabase).
+   - Seed demo accounts the same way: `DATABASE_URL="..." DATABASE_SSL=require node scripts/seed.mjs`
+3. **Environment variables (Vercel → Project → Settings → Env):**
+   | Key | Value |
+   | --- | --- |
+   | `DATABASE_URL` | the hosted Postgres URL (add as **secret**, never in git) |
+   | `SESSION_SECRET` | 64 hex chars: `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"` |
+   | `DATABASE_SSL` | `require` |
+   | `DATABASE_POOL_MAX` | `3` (serverless-friendly) |
+   | `DATABASE_PREPARE` | `false` — only if using a transaction-pooler URL (e.g. Supabase `:6543`) |
+4. **Deploy** from the dashboard, then verify:
+   - `GET /api/health` → `{"ok":true,"db":"up"}`
+   - Sign in with a seeded account; create/edit a document; reload; share with
+     another seeded account; confirm the recipient's Viewer/Editor behavior.
+5. Secrecy: no client bundle ever receives `DATABASE_URL`/`SESSION_SECRET`;
+   session cookies are HttpOnly and HMAC-signed server-side.
 
 ### Deployment status
 

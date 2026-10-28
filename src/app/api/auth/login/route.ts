@@ -12,8 +12,7 @@ export async function POST(request: Request): Promise<NextResponse> {
     return jsonError(400, "Invalid JSON body");
   }
   const email = str(body.email, 200)?.toLowerCase();
-  // Passwords are compared exactly (no trimming).
-  const password =
+    const password =
     typeof body.password === "string" && body.password.length > 0
       ? body.password.slice(0, 200)
       : undefined;

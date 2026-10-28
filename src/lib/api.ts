@@ -5,7 +5,6 @@ export function jsonError(status: number, message: string): NextResponse {
   return NextResponse.json({ error: message }, { status });
 }
 
-/** Resolves the caller or returns the appropriate unauthorized response. */
 export async function requireUser(): Promise<
   { user: SafeUser; response: null } | { user: null; response: NextResponse }
 > {

@@ -1,19 +1,3 @@
-/**
- * Server-side converter for imported .txt and .md files into ProseMirror
- * (Tiptap) document JSON. Deliberately small and dependency-free.
- *
- * Supported Markdown subset (see docs: ARCHITECTURE.md):
- *  - ATX headings (# .. ####)
- *  - Bullet lists (-, *, +) and ordered lists (1., 2) with explicit start numbers
- *  - Fenced code blocks ```lang
- *  - Blockquotes (>)
- *  - Horizontal rules (---, ***)
- *  - Paragraphs, hard line breaks preserved inside paragraphs
- *  - Inline: **bold**, *italic* / _italic_, `code`, ~~strike~~, [text](url)
- *
- * .txt files become paragraphs split on blank lines; lines within a
- * paragraph are joined with hard breaks.
- */
 
 export type ProseMirrorNode = {
   type: string;
@@ -32,13 +16,11 @@ export function emptyDoc(): ProseMirrorNode {
   return { type: "doc", content: [{ type: "paragraph" }] };
 }
 
-// ---------------- inline parsing ----------------
 
 type InlineToken = { text: string; marks: string[] };
 
 function parseInline(text: string): InlineToken[] {
-  // Ordered by delimiters; each pass consumes matched segments.
-  const patterns: { re: RegExp; mark: string }[] = [
+    const patterns: { re: RegExp; mark: string }[] = [
     { re: /\*\*([^*]+)\*\*|__([^_]+)__/g, mark: "bold" },
     { re: /\*([^*]+)\*|_([^_]+)_/g, mark: "italic" },
     { re: /~~([^~]+)~~/g, mark: "strike" },
@@ -68,8 +50,7 @@ function parseInline(text: string): InlineToken[] {
         } else if (mark !== "__skipImage__") {
           next.push({ text: m[1] ?? m[2], marks: [...tok.marks, mark] });
         }
-        // skipImage: text is dropped intentionally
-        lastIndex = m.index + m[0].length;
+                lastIndex = m.index + m[0].length;
       }
       if (lastIndex < tok.text.length) {
         next.push({ text: tok.text.slice(lastIndex), marks: tok.marks });
@@ -94,14 +75,12 @@ function textNodes(tokens: InlineToken[]): ProseMirrorNode[] {
   }));
 }
 
-// ---------------- block parsing ----------------
 
 export function markdownToProseMirror(markdown: string): ImportResult {
   const lines = markdown.replace(/\r\n/g, "\n").replace(/\r/g, "\n").split("\n");
   const blocks: ProseMirrorNode[] = [];
 
-  // Title: first possible user-provided heading, or fallback given by caller.
-  let title: string | null = null;
+    let title: string | null = null;
 
   let i = 0;
   let paragraph: string[] = [];
@@ -118,8 +97,7 @@ export function markdownToProseMirror(markdown: string): ImportResult {
   while (i < lines.length) {
     const line = lines[i];
 
-    // fenced code
-    if (line.trimStart().startsWith("```")) {
+        if (line.trimStart().startsWith("```")) {
       flushParagraph();
       i++;
       const code: string[] = [];
@@ -127,21 +105,19 @@ export function markdownToProseMirror(markdown: string): ImportResult {
         code.push(lines[i]);
         i++;
       }
-      i++; // closing fence
+      i++; 
       blocks.push({ type: "codeBlock", content: [{ type: "text", text: code.join("\n") }] });
       continue;
     }
 
-    // horizontal rule
-    if (/^\s*([-*_])\1{2,}\s*$/.test(line)) {
+        if (/^\s*([-*_])\1{2,}\s*$/.test(line)) {
       flushParagraph();
       blocks.push({ type: "horizontalRule" });
       i++;
       continue;
     }
 
-    // blockquote
-    if (/^\s*>\s?/.test(line)) {
+        if (/^\s*>\s?/.test(line)) {
       flushParagraph();
       const quote: string[] = [];
       while (i < lines.length && /^\s*>\s?/.test(lines[i])) {
@@ -159,8 +135,7 @@ export function markdownToProseMirror(markdown: string): ImportResult {
       continue;
     }
 
-    // heading
-    const heading = line.match(/^\s*(#{1,4})\s+(.*\S)\s*$/);
+        const heading = line.match(/^\s*(#{1,4})\s+(.*\S)\s*$/);
     if (heading) {
       flushParagraph();
       if (title === null) title = heading[2].replace(/[#_*`]/g, "").trim();
@@ -173,8 +148,7 @@ export function markdownToProseMirror(markdown: string): ImportResult {
       continue;
     }
 
-    // lists (bullet / ordered), consecutive entries grouped
-    const bullet = line.match(/^\s*[-*+]\s+(.*\S)\s*$/);
+        const bullet = line.match(/^\s*[-*+]\s+(.*\S)\s*$/);
     const ordered = line.match(/^\s*(\d+)[.)]\s+(.*\S)\s*$/);
     if (bullet || ordered) {
       flushParagraph();
@@ -190,7 +164,7 @@ export function markdownToProseMirror(markdown: string): ImportResult {
           items.push({ type: "listItem", content: textNodes(parseInline(bm[1])) });
         } else if (/^\s*$/.test(lines[i])) {
           i++;
-          break; // blank line ends the list
+          break; 
         } else {
           break;
         }
@@ -204,8 +178,7 @@ export function markdownToProseMirror(markdown: string): ImportResult {
       continue;
     }
 
-    // blank line ends paragraph
-    if (/^\s*$/.test(line)) {
+        if (/^\s*$/.test(line)) {
       flushParagraph();
       i++;
       continue;
@@ -234,8 +207,7 @@ export function textToProseMirror(text: string): ImportResult {
     if (lines.length === 1) {
       return { type: "paragraph", content: [{ type: "text", text: lines[0] }] };
     }
-    // Multi-line text paragraphs: first line as text, subsequent as hard breaks
-    const content: ProseMirrorNode[] = [];
+        const content: ProseMirrorNode[] = [];
     lines.forEach((l, idx) => {
       if (idx > 0) content.push({ type: "hardBreak" });
       content.push({ type: "text", text: l });
@@ -255,7 +227,6 @@ export function textToProseMirror(text: string): ImportResult {
 
 export const IMPORT_EXTENSIONS = ["txt", "md", "markdown"] as const;
 
-/** Picks the right converter for a filename; null when the type is unsupported. */
 export function convertImport(
   filename: string,
   body: string,
